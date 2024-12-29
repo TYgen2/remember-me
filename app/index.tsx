@@ -1,5 +1,5 @@
 import { Redirect } from "expo-router";
-import { useAuthContext } from "../context/auth-context";
+import { useAuthContext } from "~/context/auth-context";
 
 const Index = () => {
   const { authMethod } = useAuthContext();

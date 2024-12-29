@@ -1,15 +1,14 @@
-import { View, Text, Image } from "react-native";
-import "../../global.css";
-import WelcomeHeader from "../../components/welcome-header";
+import "~/global.css";
+import { View } from "react-native";
+import AuthOptions from "~/components/auth/welcome/auth-options";
+import WelcomeHeader from "~/components/auth/welcome/welcome-header";
 
 const WelcomeScreen = () => {
   return (
-    <View className="flex flex-1 bg-green-100">
-      {/* Welcome title & App Icon */}
+    <View className="flex flex-1 justify-center gap-12">
       <WelcomeHeader />
 
-      {/* Authentication options */}
-      <View></View>
+      <AuthOptions />
     </View>
   );
 };

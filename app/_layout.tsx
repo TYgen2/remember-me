@@ -1,4 +1,4 @@
-import { AuthContextProvider } from "../context/auth-context";
+import { AuthContextProvider } from "~/context/auth-context";
 import { Slot } from "expo-router";
 
 const RootLayout = () => {
