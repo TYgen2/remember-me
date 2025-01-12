@@ -1,15 +1,29 @@
 import { Redirect } from "expo-router";
 import { useAuthContext } from "~/context/auth-context";
+import { Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Index = () => {
-  const { authMethod } = useAuthContext();
-  console.log("Main screen here!! Checking for auth method...", authMethod);
+  // For testing first time user
+  AsyncStorage.clear();
+
+  // Get auth status
+  const { authed, loading } = useAuthContext();
+
+  if (loading) {
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   // First time user
-  if (authMethod === undefined) {
+  if (authed === undefined) {
     return <Redirect href="/(auth)/welcome" />;
   }
 
+  // Authed
   return <Redirect href="/(main)" />;
 };
 

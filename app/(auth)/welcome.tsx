@@ -1,14 +1,13 @@
 import "~/global.css";
 import { View } from "react-native";
-import AuthOptions from "~/components/auth/welcome/auth-options";
+import GetStarted from "~/components/auth/welcome/get-started";
 import WelcomeHeader from "~/components/auth/welcome/welcome-header";
 
 const WelcomeScreen = () => {
   return (
-    <View className="flex flex-1 justify-center gap-12">
+    <View className="flex flex-1 justify-center gap-12 bg-white">
       <WelcomeHeader />
-
-      <AuthOptions />
+      <GetStarted />
     </View>
   );
 };

@@ -1,46 +1,33 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AuthMethod } from "../types/auth";
 import { useLocalStorage } from "../hooks/use-local-storage";
-
-interface AuthContextType {
-  authMethod: AuthMethod;
-  updateAuthMethod: (method: AuthMethod) => void;
-}
 
 interface AuthContextProviderProps {
   children: React.ReactNode;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+interface AuthContextValue {
+  authed: boolean;
+  loading: boolean;
+}
+
+const AuthContext = createContext<AuthContextValue>({ authed: false, loading: true });
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const { getItem, setItem } = useLocalStorage("authMethod");
-  const [authMethod, setAuthMethod] = useState<AuthMethod>(undefined);
+  const { getItem } = useLocalStorage("authed");
+  const [authed, setAuthed] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadAuthMethod = async () => {
-      const method = await getItem();
-      setAuthMethod(method);
+    const loadAuthStatus = async () => {
+      const status = await getItem();
+      setAuthed(status);
+      setLoading(false);
     };
-    loadAuthMethod();
+    loadAuthStatus();
   }, [getItem]);
 
-  const updateAuthMethod = async (method: AuthMethod) => {
-    try {
-      setAuthMethod(method);
-      await setItem(method);
-    } catch (error) {
-      console.error("Failed to update authentication method:", error);
-    }
-  };
-
   return (
-    <AuthContext.Provider
-      value={{
-        authMethod,
-        updateAuthMethod,
-      }}
-    >
+    <AuthContext.Provider value={{ authed, loading }}>
       {children}
     </AuthContext.Provider>
   );
