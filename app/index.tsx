@@ -1,30 +1,30 @@
 import { Redirect } from "expo-router";
 import { useAuthContext } from "~/context/auth-context";
-import { Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { authenticateUser } from "~/lib/auth";
+import { LoadingSpinner } from "~/components/loading-spinner";
 
 const Index = () => {
   // For testing first time user
-  AsyncStorage.clear();
+  // AsyncStorage.clear();
 
   // Get auth status
-  const { authed, loading } = useAuthContext();
+  const { authConfirmed, loading } = useAuthContext();
 
   if (loading) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
+    return <LoadingSpinner />
   }
 
   // First time user
-  if (authed === undefined) {
+  if (authConfirmed === undefined) {
     return <Redirect href="/(auth)/welcome" />;
   }
 
-  // Authed
-  return <Redirect href="/(main)" />;
+  // Not first time user, but not authenticated. Authenticate now
+  if (authConfirmed) {
+    authenticateUser();
+  }
+
 };
 
 export default Index;

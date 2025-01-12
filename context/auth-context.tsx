@@ -6,28 +6,28 @@ interface AuthContextProviderProps {
 }
 
 interface AuthContextValue {
-  authed: boolean;
+  authConfirmed: boolean;
   loading: boolean;
 }
 
-const AuthContext = createContext<AuthContextValue>({ authed: false, loading: true });
+const AuthContext = createContext<AuthContextValue>({ authConfirmed: false, loading: true });
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const { getItem } = useLocalStorage("authed");
-  const [authed, setAuthed] = useState(false);
+  const { getItem } = useLocalStorage("authConfirmed");
+  const [authConfirmed, setAuthConfirmed] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadAuthStatus = async () => {
       const status = await getItem();
-      setAuthed(status);
+      setAuthConfirmed(status);
       setLoading(false);
     };
     loadAuthStatus();
   }, [getItem]);
 
   return (
-    <AuthContext.Provider value={{ authed, loading }}>
+    <AuthContext.Provider value={{ authConfirmed, loading }}>
       {children}
     </AuthContext.Provider>
   );
