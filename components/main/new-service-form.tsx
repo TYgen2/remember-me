@@ -2,32 +2,63 @@ import { Text, View } from "react-native"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { Button } from "../ui/button"
-import AntDesign from '@expo/vector-icons/AntDesign';
 import { useForm, Controller } from "react-hook-form";
-import { z } from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod"
+import AntDesign from '@expo/vector-icons/AntDesign';
+import Feather from '@expo/vector-icons/Feather';
+import useCredentialStore from "~/store/useCredentialStore";
+import { CredentialSchema } from "~/schema/zod-schema";
+import { z } from "zod";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useState } from "react";
+import { prohibitedServiceName } from "~/lib/prohibited-service-name";
+import { ServiceInputCheckType } from "~/types/service-input";
+import CheckButton from "./check-button";
 
-const schema = z.object({
-    serviceName: z.string(),
-    email: z.string().email(),
-    password: z.string(),
-});
+type FormFields = z.infer<typeof CredentialSchema>;
+type NewServiceFormProps = {
+    closeModal: () => void;
+};
 
-type FormFields = z.infer<typeof schema>;
+const NewServiceForm = ({ closeModal }: NewServiceFormProps) => {
+    const [exists, setExists] = useState<ServiceInputCheckType | undefined>(undefined);
 
-const NewServiceForm = () => {
+    const { addCredential } = useCredentialStore();
     const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<FormFields>({
         defaultValues: {
             serviceName: "",
             email: "",
             password: "",
         },
-        resolver: zodResolver(schema)
+        resolver: zodResolver(CredentialSchema)
     });
-    const onSubmit = (data: FormFields) => console.log(data);
+
+    const onSubmit = async (data: FormFields) => {
+        try {
+            await addCredential({ service: data.serviceName, email: data.email, password: data.password });
+            closeModal();
+        } catch (error) {
+            console.error("Error adding credential", error);
+            setError("serviceName", { message: "Failed to add credential." });
+        }
+    }
+
+    const checkExistingService = async (serviceName: string) => {
+        if (prohibitedServiceName.includes(serviceName)) {
+            setExists("NOT_ALLOWED");
+            return;
+        }
+
+        try {
+            const existing = await AsyncStorage.getItem(serviceName);
+            setExists(existing !== null ? "EXISTS" : "OKAY");
+        } catch (error) {
+            console.error("Error checking existing service", error);
+        }
+    }
 
     return (
-        <View className="flex flex-1 justify-start items-center">
+        <View className="flex justify-start items-center">
             <View className="w-full h-24">
                 <Label className="text-white font-bold">Service name</Label>
                 <View className="flex flex-row gap-2">
@@ -35,12 +66,15 @@ const NewServiceForm = () => {
                         control={control}
                         name="serviceName"
                         render={({ field: { onChange, value } }) => (
-                            <Input id="email" placeholder="e.g Facebook, Youtube..." className="flex-1" onChangeText={onChange} value={value} />
+                            <>
+                                <Input id="email" placeholder="e.g facebook, youtube..." className="flex-1" onChangeText={(e) => {
+                                    onChange(e);
+                                    setExists(undefined);
+                                }} value={value} />
+                                <CheckButton exists={exists} checkExistingService={checkExistingService} value={value} />
+                            </>
                         )}
                     />
-                    <Button className="bg-slate-700">
-                        <Text className="text-white font-bold">Check</Text>
-                    </Button>
                 </View>
                 {errors.serviceName && <Text className="text-red-500">{errors.serviceName.message}</Text>}
             </View>
@@ -69,10 +103,17 @@ const NewServiceForm = () => {
                 {errors.password && <Text className="text-red-500">{errors.password.message}</Text>}
             </View>
 
-            <Button className="w-2/7 flex-row gap-2 mr-auto mt-2" onPress={handleSubmit(onSubmit)}>
-                <AntDesign name="pluscircleo" size={16} color="white" />
-                <Text className="text-white font-bold">Add more</Text>
-            </Button>
+            <View className="flex flex-row justify-between w-full">
+                <Button className="w-2/7 flex-row gap-2 mt-2">
+                    <AntDesign name="pluscircleo" size={16} color="white" />
+                    <Text className="text-white font-bold">Add more</Text>
+                </Button>
+
+                <Button className="w-16 h-16 rounded-full bg-green-300"
+                    onPress={handleSubmit(onSubmit)} size="icon" disabled={isSubmitting}>
+                    <Feather name="check" size={28} color="black" />
+                </Button>
+            </View>
         </View>
     )
 }

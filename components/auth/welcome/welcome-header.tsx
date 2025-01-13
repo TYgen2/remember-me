@@ -9,7 +9,7 @@ const WelcomeHeader = () => {
   const authExplain = () => {
     setAlertOpen(true);
     setAlertMessage({
-      title: "🤔Authentication default priority",
+      title: "🤔 Authentication default priority",
       content: authExplainText()
     });
   }
