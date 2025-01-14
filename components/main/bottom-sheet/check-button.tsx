@@ -1,5 +1,5 @@
 import { ServiceInputCheckType } from "~/types/service-input"
-import { Button } from "../ui/button"
+import { Button } from "../../ui/button"
 import { Text } from "react-native"
 import { View } from "react-native"
 

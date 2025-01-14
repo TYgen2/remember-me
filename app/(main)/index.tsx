@@ -1,21 +1,21 @@
 import { useEffect } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
-import AddButton from "~/components/main/add-button";
+import AddButton from "~/components/main/bottom-sheet/add-button";
 import { Card } from "~/components/ui/card";
 import useCredentialStore from "~/store/useCredentialStore";
 
 const MainScreen = () => {
-  const { loadCredentials, credentials, removeCredential } = useCredentialStore();
+  const { loadCredentials, filteredCredentials, removeCredential } = useCredentialStore();
 
   useEffect(() => {
     loadCredentials();
   }, [loadCredentials]);
 
   return (
-    <View className="flex-1 bg-green-100">
+    <View className="flex-1 bg-green-100" style={{ paddingTop: 60 }}>
       <AddButton />
       <FlatList
-        data={credentials}
+        data={filteredCredentials}
         numColumns={2}
         contentContainerStyle={{ padding: 20 }}
         columnWrapperStyle={{ justifyContent: "space-between" }}

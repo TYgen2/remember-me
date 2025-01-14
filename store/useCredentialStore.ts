@@ -5,19 +5,37 @@ import * as SecureStore from 'expo-secure-store';
 
 interface CredentialStore {
     credentials: Credential[];
+    filteredCredentials: Credential[];
+    searchQuery: string;
     addCredential: (credential: Credential) => Promise<void>;
     removeCredential: (service: string) => Promise<void>;
     loadCredentials: () => Promise<void>;
+    setSearchQuery: (query: string) => void;
 }
+
+const filterCredentials = (credentials: Credential[], query: string) => {
+    const normalizedQuery = query.toLowerCase().trim();
+    if (!normalizedQuery) return credentials;
+
+    return credentials.filter((credential) =>
+        credential.service.toLowerCase().includes(normalizedQuery)
+    );
+};
 
 const useCredentialStore = create<CredentialStore>((set) => ({
     credentials: [],
+    filteredCredentials: [],
+    searchQuery: '',
     addCredential: async (newCredential) => {
         await SecureStore.setItemAsync(newCredential.service, JSON.stringify(newCredential));
         await AsyncStorage.setItem(newCredential.service, "EXISTS");
-        set((state) => ({
-            credentials: [...state.credentials, newCredential]
-        }))
+        set((state) => {
+            const newCredentials = [...state.credentials, newCredential];
+            return {
+                credentials: newCredentials,
+                filteredCredentials: filterCredentials(newCredentials, state.searchQuery)
+            };
+        });
     },
     loadCredentials: async () => {
         const keys = await AsyncStorage.getAllKeys();
@@ -27,16 +45,28 @@ const useCredentialStore = create<CredentialStore>((set) => ({
                 return credential ? { service, ...JSON.parse(credential) } : null;
             })
         );
+        const validCredentials = fetchedCredentials.filter((cred): cred is Credential => cred !== null);
         set({
-            credentials: fetchedCredentials.filter((cred): cred is Credential => cred !== null)
-        })
+            credentials: validCredentials,
+            filteredCredentials: validCredentials
+        });
     },
     removeCredential: async (service) => {
         await SecureStore.deleteItemAsync(service);
         await AsyncStorage.removeItem(service);
+        set((state) => {
+            const newCredentials = state.credentials.filter((cred) => cred.service !== service);
+            return {
+                credentials: newCredentials,
+                filteredCredentials: filterCredentials(newCredentials, state.searchQuery)
+            };
+        });
+    },
+    setSearchQuery: (query) => {
         set((state) => ({
-            credentials: state.credentials.filter((cred) => cred.service !== service)
-        }))
+            searchQuery: query,
+            filteredCredentials: filterCredentials(state.credentials, query)
+        }));
     }
 }))
 

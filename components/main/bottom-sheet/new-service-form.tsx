@@ -1,7 +1,7 @@
 import { Text, View } from "react-native"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
-import { Button } from "../ui/button"
+import { Label } from "../../ui/label"
+import { Input } from "../../ui/input"
+import { Button } from "../../ui/button"
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
 import AntDesign from '@expo/vector-icons/AntDesign';
