@@ -1,4 +1,4 @@
-import { Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import { Label } from "../../ui/label"
 import { Input } from "../../ui/input"
 import { Button } from "../../ui/button"
@@ -14,6 +14,7 @@ import { useState } from "react";
 import { prohibitedServiceName } from "~/lib/prohibited-service-name";
 import { ServiceInputCheckType } from "~/types/service-input";
 import CheckButton from "./check-button";
+import { LinearGradient } from 'expo-linear-gradient';
 
 type FormFields = z.infer<typeof CredentialSchema>;
 type NewServiceFormProps = {
@@ -104,18 +105,32 @@ const NewServiceForm = ({ closeModal }: NewServiceFormProps) => {
             </View>
 
             <View className="flex flex-row justify-between w-full">
-                <Button className="w-2/7 flex-row gap-2 mt-2">
+                <Button className="w-2/7 flex-row gap-2 mt-2 bg-black">
                     <AntDesign name="pluscircleo" size={16} color="white" />
                     <Text className="text-white font-bold">Add more</Text>
                 </Button>
 
-                <Button className="w-16 h-16 rounded-full bg-green-300"
+                <Button className="w-16 h-16 rounded-full overflow-hidden"
                     onPress={handleSubmit(onSubmit)} size="icon" disabled={isSubmitting}>
+                    <LinearGradient
+                        colors={['#E8F5C8', '#9FA5D5']}
+                        style={styles.background}
+                    />
                     <Feather name="check" size={28} color="black" />
                 </Button>
             </View>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: '100%'
+    },
+})
 
 export default NewServiceForm

@@ -10,21 +10,16 @@ const MainLayout = () => {
         name="index"
         options={{
           headerShown: true,
-          headerTitle: "Home",
+          headerTitle: "My keys✨",
           headerTitleAlign: "center",
           headerTransparent: true,
+          headerTitleStyle: {
+            fontWeight: "bold",
+            color: "white"
+          },
+          headerTintColor: "white",
           drawerIcon: () => <FontAwesome name="home" size={24} color="black" />,
           headerRight: () => <SearchBox />,
-          headerBackground: () => (
-            <View
-              style={{
-                height: 60,
-                backgroundColor: "#fff",
-                borderBottomEndRadius: 24,
-                borderBottomStartRadius: 24,
-              }}
-            />
-          ),
         }}
       />
     </Drawer>

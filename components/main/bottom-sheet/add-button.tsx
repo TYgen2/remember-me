@@ -1,4 +1,4 @@
-import { Text, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import { Button } from "../../ui/button"
 import {
     BottomSheetBackdrop,
@@ -11,6 +11,8 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import useAlert from "~/hooks/use-alert";
 import AlertPopup from "../../alert-popup";
 import { credentialExplainText } from "~/lib/alert-content-text";
+import Fontisto from '@expo/vector-icons/Fontisto';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const AddButton = () => {
     const { alertOpen, setAlertOpen, alertMessage, setAlertMessage } = useAlert();
@@ -39,19 +41,23 @@ const AddButton = () => {
         <>
             <AlertPopup alertOpen={alertOpen} setAlertOpen={setAlertOpen} message={alertMessage} />
 
-            <Button className="h-20 w-20 rounded-full bg-primary absolute bottom-10 right-10 z-10"
+            <Button className="h-20 w-20 rounded-full shadow-lg absolute bottom-10 right-10 z-10 overflow-hidden"
                 size="icon" onPress={handlePresentModalPress}>
-                <Text className="text-3xl font-bold text-white">+</Text>
+                <LinearGradient
+                    colors={['#F2ECB6', '#A96F44']}
+                    style={styles.background}
+                />
+                <Fontisto name="plus-a" size={24} color="black" />
             </Button>
 
             <BottomSheetModal
                 ref={bottomSheetModalRef}
                 enableOverDrag={false}
-                backgroundStyle={{ backgroundColor: 'black' }}
+                backgroundStyle={{ backgroundColor: '#28282B' }}
                 handleIndicatorStyle={{ backgroundColor: 'white' }}
                 backdropComponent={renderBackdrop}
             >
-                <BottomSheetView className="bg-black px-8 pb-8">
+                <BottomSheetView className="px-8 pb-8">
                     <View className="flex flex-row items-center">
                         <Text className="text-2xl font-bold text-white py-4">New credential 🔑</Text>
                         <AntDesign name="questioncircleo" size={24} color="white" className="ml-auto"
@@ -63,5 +69,15 @@ const AddButton = () => {
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    background: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        height: '100%'
+    },
+})
 
 export default AddButton

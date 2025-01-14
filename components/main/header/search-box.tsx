@@ -73,7 +73,7 @@ const SearchBox = () => {
                         <AntDesign
                             name={isExpanded ? "close" : "search1"}
                             size={24}
-                            color="black"
+                            color={isExpanded ? 'black' : 'white'}
                             onPress={isExpanded ? closeSearchBar : handlePress}
                         />
                         {isExpanded && (
