@@ -1,7 +1,6 @@
 import { Drawer } from "expo-router/drawer";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import SearchBox from "~/components/main/header/search-box";
-import { View } from "react-native";
 
 const MainLayout = () => {
   return (

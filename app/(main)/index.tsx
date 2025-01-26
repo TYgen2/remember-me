@@ -1,32 +1,48 @@
-import { useCallback, useEffect } from "react";
-import { FlatList, View } from "react-native";
+import { useEffect, useState } from "react";
+import { FlatList, View, ViewToken } from "react-native";
+import { useSharedValue } from "react-native-reanimated";
 import AddButton from "~/components/main/bottom-sheet/add-button";
+import Empty from "~/components/main/empty";
 import ServiceCard from "~/components/main/service-card";
 import useCredentialStore from "~/store/useCredentialStore";
-import { Credential } from "~/types/credential";
 
 const MainScreen = () => {
   const { loadCredentials, filteredCredentials, removeCredential } = useCredentialStore();
 
-  const renderItem = useCallback(({ item }: { item: Credential }) => {
-    return <ServiceCard item={item} removeCredential={removeCredential} />
-  }, []);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
+  const handleCardPress = (service: string) => {
+    setExpandedCard((current) => (current === service ? null : service))
+  }
 
   useEffect(() => {
     loadCredentials();
   }, [loadCredentials]);
 
+  const viewableItems = useSharedValue<ViewToken[]>([]);
+
   return (
     <View className="flex-1 bg-black" style={{ paddingTop: 60 }}>
       <AddButton />
       <FlatList
+        renderItem={({ item }) => (
+          <ServiceCard
+            item={item}
+            viewableItems={viewableItems}
+            removeCredential={removeCredential}
+            isExpanded={expandedCard === item.service}
+            onPress={() => handleCardPress(item.service)}
+          />
+        )}
         data={filteredCredentials}
-        numColumns={2}
+        ListEmptyComponent={<Empty />}
+        keyExtractor={(item) => item.service}
         contentContainerStyle={{ padding: 20 }}
-        columnWrapperStyle={{ justifyContent: "space-between" }}
-        renderItem={renderItem}
+        onViewableItemsChanged={({ viewableItems: vItems }) => {
+          viewableItems.value = vItems;
+        }}
       />
     </View>
   );
 };
+
 export default MainScreen;

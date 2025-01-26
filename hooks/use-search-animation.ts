@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { runOnJS, useSharedValue, withSpring, withTiming } from "react-native-reanimated"
+import { useSharedValue, withSpring, withTiming } from "react-native-reanimated"
 import { getScreenWidth } from "~/lib/utils";
 
 const useSearchAnimation = () => {
@@ -8,12 +8,10 @@ const useSearchAnimation = () => {
 
   const screenWidth = getScreenWidth();
 
-  const expandSearchBar = useCallback((onComplete?: () => void) => {
+  const expandSearchBar = useCallback(() => {
     width.value = withSpring(screenWidth - 56, {
       damping: 15,
       stiffness: 100,
-    }, () => {
-      if (onComplete) runOnJS(onComplete)();
     });
     colorProgress.value = withTiming(1, { duration: 200 });
   }, [screenWidth, width, colorProgress]);

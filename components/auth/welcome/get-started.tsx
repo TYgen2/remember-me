@@ -11,7 +11,7 @@ const GetStarted = () => {
         <View className="justify-center items-center">
             <AlertPopup alertOpen={alertOpen} setAlertOpen={setAlertOpen} message={alertMessage}
                 action={openPasswordSettings} actionText="Open settings" hasCancelAction={true} />
-            <Button className="w-3/4" size="lg" onPress={() => authenticateForFirstTime({ setAlertOpen, setAlertMessage })}>
+            <Button className="w-3/4 bg-black" size="lg" onPress={() => authenticateForFirstTime({ setAlertOpen, setAlertMessage })}>
                 <Text className="text-white font-bold">Get started</Text>
             </Button>
         </View>

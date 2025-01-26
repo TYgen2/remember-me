@@ -38,8 +38,9 @@ const SearchBox = () => {
 
     const handlePress = useCallback(() => {
         if (!isExpanded) {
+            setTimeout(() => inputRef.current?.focus(), 100)
             setIsExpanded(true)
-            expandSearchBar(() => inputRef.current?.focus())
+            expandSearchBar()
         }
     }, [isExpanded, expandSearchBar])
 

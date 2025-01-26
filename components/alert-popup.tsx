@@ -13,10 +13,10 @@ interface AlertPopupProps {
 const AlertPopup = ({ alertOpen, setAlertOpen, message, action, actionText, hasCancelAction }: AlertPopupProps) => {
     return (
         <AlertDialog open={alertOpen} onOpenChange={() => setAlertOpen(false)}>
-            <AlertDialogContent>
+            <AlertDialogContent className="bg-black border-black">
                 <AlertDialogHeader>
-                    <AlertDialogTitle>{message.title}</AlertDialogTitle>
-                    <AlertDialogDescription>
+                    <AlertDialogTitle className="text-white">{message.title}</AlertDialogTitle>
+                    <AlertDialogDescription className="text-white">
                         {message.content}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -28,8 +28,8 @@ const AlertPopup = ({ alertOpen, setAlertOpen, message, action, actionText, hasC
 
                     {action ? <AlertDialogAction onPress={action}>
                         <Text className="text-white font-bold">{actionText}</Text>
-                    </AlertDialogAction> : <AlertDialogAction>
-                        <Text className="text-white font-bold">Got it</Text>
+                    </AlertDialogAction> : <AlertDialogAction className="bg-white">
+                        <Text className="text-black font-bold">Got it</Text>
                     </AlertDialogAction>}
 
                 </AlertDialogFooter>

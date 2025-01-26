@@ -1,60 +1,56 @@
-import { useRef, useState } from "react";
-import { Animated } from "react-native";
+import { ViewToken } from "react-native";
+import { useAnimatedStyle } from "react-native-reanimated";
+import { SharedValue, withTiming } from "react-native-reanimated";
+import { Credential } from "~/types/credential";
 
-const useCardAnimation = () => {
-    const [isFlipped, setIsFlipped] = useState(false);
-    const flipAnimation = useRef(new Animated.Value(0)).current;
+interface CardAnimationProps {
+    item: Credential
+    viewableItems: SharedValue<ViewToken[]>
+    isExpanded: boolean
+}
 
-    const frontInterpolate = flipAnimation.interpolate({
-        inputRange: [0, 180],
-        outputRange: ["0deg", "180deg"],
-    })
+const useCardAnimation = ({ item, viewableItems, isExpanded }: CardAnimationProps) => {
+    const rStyle = useAnimatedStyle(() => {
+        const isVisible = Boolean(viewableItems.value.filter((item) => item.isViewable)
+            .find((viewableItem) => viewableItem.item.service === item.service));
 
-    const flipToFrontStyle = {
-        transform: [
-            { rotateY: frontInterpolate }
-        ]
-    }
-
-    const backInterpolate = flipAnimation.interpolate({
-        inputRange: [0, 180],
-        outputRange: ["180deg", "360deg"],
-    })
-
-    const flipToBackStyle = {
-        transform: [
-            { rotateY: backInterpolate }
-        ]
-    }
-
-    const flipCard = () => {
-        if (isFlipped) {
-            Animated.spring(flipAnimation, {
-                toValue: 0,
-                useNativeDriver: true,
-                friction: 8,
-                tension: 10,
-            }).start();
-
-        } else {
-            Animated.spring(flipAnimation, {
-                toValue: 180,
-                useNativeDriver: true,
-                friction: 8,
-                tension: 10,
-            }).start();
-
+        return {
+            opacity: withTiming(isVisible ? 1 : 0),
+            transform: [
+                {
+                    scale: withTiming(isVisible ? 1 : 0.6)
+                }
+            ]
         }
-        setIsFlipped(!isFlipped)
-    }
+    }, [])
+
+    const rContentStyle = useAnimatedStyle(() => {
+        return {
+            height: withTiming(isExpanded ? 120 : 70, { duration: 300 }),
+            transform: [
+                {
+                    scale: withTiming(1, { duration: 300 }),
+                },
+            ],
+        }
+    }, [isExpanded])
+
+    const rDetailsStyle = useAnimatedStyle(() => {
+        return {
+            opacity: withTiming(isExpanded ? 1 : 0, { duration: 200 }),
+            transform: [
+                {
+                    translateY: withTiming(isExpanded ? 0 : 20, { duration: 300 }),
+                },
+            ],
+        }
+    }, [isExpanded])
 
     return {
-        isFlipped,
-        flipCard,
-        flipAnimation,
-        flipToFrontStyle,
-        flipToBackStyle
+        rStyle,
+        rContentStyle,
+        rDetailsStyle
     }
 }
 
-export default useCardAnimation
+export default useCardAnimation;
