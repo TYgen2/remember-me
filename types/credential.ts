@@ -1,5 +1,5 @@
 export interface Credential {
     service: string,
-    email: string,
+    login_id: string,
     password: string
 }

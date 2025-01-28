@@ -5,6 +5,6 @@ export const CredentialSchema = z.object({
         .refine((value) => value !== "authConfirmed", { message: "This service name is not allowed" })
         .refine((value) => !value.includes(' '), { message: "Space is not allowed." })
         .refine((value) => /^[a-zA-Z0-9._-]+$/.test(value), { message: "Only alphanumeric, '.', '-', and '_' are allowed." }),
-    email: z.string().email({ message: "Invalid email address" }),
+    login_id: z.string().min(1, { message: "Login ID is required" }),
     password: z.string().min(1, { message: "Password is required" }),
 });

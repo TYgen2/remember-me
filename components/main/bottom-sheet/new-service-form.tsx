@@ -28,7 +28,7 @@ const NewServiceForm = ({ closeModal }: NewServiceFormProps) => {
     const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<FormFields>({
         defaultValues: {
             serviceName: "",
-            email: "",
+            login_id: "",
             password: "",
         },
         resolver: zodResolver(CredentialSchema)
@@ -36,7 +36,7 @@ const NewServiceForm = ({ closeModal }: NewServiceFormProps) => {
 
     const onSubmit = async (data: FormFields) => {
         try {
-            await addCredential({ service: data.serviceName, email: data.email, password: data.password });
+            await addCredential({ service: data.serviceName, login_id: data.login_id, password: data.password });
             closeModal();
         } catch (error) {
             console.error("Error adding credential", error);
@@ -81,15 +81,15 @@ const NewServiceForm = ({ closeModal }: NewServiceFormProps) => {
             </View>
 
             <View className="w-full h-24">
-                <Label className="text-white font-bold">Email</Label>
+                <Label className="text-white font-bold">Login ID</Label>
                 <Controller
                     control={control}
-                    name="email"
+                    name="login_id"
                     render={({ field: { onChange, value } }) => (
                         <Input id="email" className="w-full" onChangeText={onChange} value={value} />
                     )}
                 />
-                {errors.email && <Text className="text-red-500">{errors.email.message}</Text>}
+                {errors.login_id && <Text className="text-red-500">{errors.login_id.message}</Text>}
             </View>
 
             <View className="w-full h-24">
