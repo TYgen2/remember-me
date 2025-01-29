@@ -36,7 +36,7 @@ const MainScreen = () => {
         data={filteredCredentials}
         ListEmptyComponent={<Empty />}
         keyExtractor={(item) => item.service}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={{ padding: 20, flexGrow: 1 }}
         onViewableItemsChanged={({ viewableItems: vItems }) => {
           viewableItems.value = vItems;
         }}

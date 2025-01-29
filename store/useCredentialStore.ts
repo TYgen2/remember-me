@@ -29,12 +29,28 @@ const useCredentialStore = create<CredentialStore>((set) => ({
     addCredential: async (newCredential) => {
         await SecureStore.setItemAsync(newCredential.service, JSON.stringify(newCredential));
         await AsyncStorage.setItem(newCredential.service, "EXISTS");
+
         set((state) => {
-            const newCredentials = [...state.credentials, newCredential];
-            return {
-                credentials: newCredentials,
-                filteredCredentials: filterCredentials(newCredentials, state.searchQuery)
-            };
+            const existingCredentialIndex = state.credentials.findIndex((cred) => cred.service === newCredential.service);
+
+            if (existingCredentialIndex !== -1) {
+                // Update existing credential
+                const updatedCredentials = [...state.credentials];
+                updatedCredentials[existingCredentialIndex] = newCredential;
+
+                return {
+                    credentials: updatedCredentials,
+                    filteredCredentials: filterCredentials(updatedCredentials, state.searchQuery),
+                };
+            } else {
+                // Add new credential
+                const newCredentials = [...state.credentials, newCredential];
+
+                return {
+                    credentials: newCredentials,
+                    filteredCredentials: filterCredentials(newCredentials, state.searchQuery),
+                };
+            }
         });
     },
     loadCredentials: async () => {
