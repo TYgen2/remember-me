@@ -13,8 +13,13 @@ import AlertPopup from "../../alert-popup";
 import { credentialExplainText } from "~/lib/alert-content-text";
 import Fontisto from '@expo/vector-icons/Fontisto';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useThemeContext } from "~/context/theme-context";
+import { colors } from "~/lib/colors";
 
 const AddButton = () => {
+    const { theme } = useThemeContext();
+    const activeColor = colors[theme];
+
     const { alertOpen, setAlertOpen, alertMessage, setAlertMessage } = useAlert();
     const credentialExplain = () => {
         setAlertOpen(true);
@@ -44,7 +49,7 @@ const AddButton = () => {
             <Button className="h-20 w-20 rounded-full shadow-lg absolute bottom-10 right-10 z-10 overflow-hidden"
                 size="icon" onPress={handlePresentModalPress}>
                 <LinearGradient
-                    colors={['#F2ECB6', '#A96F44']}
+                    colors={activeColor.cardGradient}
                     style={styles.background}
                 />
                 <Fontisto name="plus-a" size={24} color="black" />

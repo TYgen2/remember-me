@@ -6,15 +6,18 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   BottomSheetModalProvider,
 } from '@gorhom/bottom-sheet'
+import { ThemeContextProvider } from "~/context/theme-context";
 
 const RootLayout = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>
-        <AuthContextProvider>
-          <Slot />
-          <PortalHost />
-        </AuthContextProvider>
+        <ThemeContextProvider>
+          <AuthContextProvider>
+            <Slot />
+            <PortalHost />
+          </AuthContextProvider>
+        </ThemeContextProvider>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
   );

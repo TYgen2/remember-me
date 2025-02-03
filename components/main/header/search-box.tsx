@@ -8,13 +8,18 @@ import Animated, {
 import { TextInput } from 'react-native-gesture-handler'
 import useSearch from '~/hooks/use-search'
 import useSearchAnimation from '~/hooks/use-search-animation'
+import { useThemeContext } from '~/context/theme-context'
+import { colors } from '~/lib/colors'
 
 const SearchBox = () => {
     const inputRef = useRef<TextInput>(null)
     const { searchText, handleSearchInput } = useSearch();
     const { width, colorProgress, expandSearchBar, collapseSearchBar } = useSearchAnimation();
 
-    const [isExpanded, setIsExpanded] = useState(false)
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const { theme } = useThemeContext();
+    const activeColor = colors[theme];
 
     const animatedStyles = useAnimatedStyle(() => {
         const backgroundColor = interpolateColor(
@@ -74,7 +79,7 @@ const SearchBox = () => {
                         <AntDesign
                             name={isExpanded ? "close" : "search1"}
                             size={24}
-                            color={isExpanded ? 'black' : 'white'}
+                            color={isExpanded ? "black" : activeColor.icon}
                             onPress={isExpanded ? closeSearchBar : handlePress}
                         />
                         {isExpanded && (
