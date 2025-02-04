@@ -4,7 +4,6 @@ import { Input } from "../../ui/input"
 import { Button } from "../../ui/button"
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod"
-import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import useCredentialStore from "~/store/useCredentialStore";
 import { CredentialSchema } from "~/schema/zod-schema";
@@ -15,6 +14,7 @@ import { prohibitedServiceName } from "~/lib/prohibited-service-name";
 import { ServiceInputCheckType } from "~/types/service-input";
 import CheckButton from "./check-button";
 import { LinearGradient } from 'expo-linear-gradient';
+import { showToastWithGravity } from "~/lib/utils";
 
 type FormFields = z.infer<typeof CredentialSchema>;
 type NewServiceFormProps = {
@@ -37,6 +37,7 @@ const NewServiceForm = ({ closeModal }: NewServiceFormProps) => {
     const onSubmit = async (data: FormFields) => {
         try {
             await addCredential({ service: data.serviceName, login_id: data.login_id, password: data.password });
+            showToastWithGravity("Credential created!")
             closeModal();
         } catch (error) {
             console.error("Error adding credential", error);
@@ -104,21 +105,14 @@ const NewServiceForm = ({ closeModal }: NewServiceFormProps) => {
                 {errors.password && <Text className="text-red-500">{errors.password.message}</Text>}
             </View>
 
-            <View className="flex flex-row justify-between w-full">
-                <Button className="w-2/7 flex-row gap-2 mt-2 bg-black">
-                    <AntDesign name="pluscircleo" size={16} color="white" />
-                    <Text className="text-white font-bold">Add more</Text>
-                </Button>
-
-                <Button className="w-16 h-16 rounded-full overflow-hidden"
-                    onPress={handleSubmit(onSubmit)} size="icon" disabled={isSubmitting}>
-                    <LinearGradient
-                        colors={['#E8F5C8', '#9FA5D5']}
-                        style={styles.background}
-                    />
-                    <Feather name="check" size={28} color="black" />
-                </Button>
-            </View>
+            <Button className="w-16 h-16 rounded-full overflow-hidden"
+                onPress={handleSubmit(onSubmit)} size="icon" disabled={isSubmitting}>
+                <LinearGradient
+                    colors={['#E8F5C8', '#9FA5D5']}
+                    style={styles.background}
+                />
+                <Feather name="check" size={28} color="black" />
+            </Button>
         </View>
     )
 }

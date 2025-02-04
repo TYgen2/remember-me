@@ -9,13 +9,13 @@ import { colors } from "~/lib/colors";
 
 const MainScreen = () => {
   const {
-    loadCredentials,
     filteredCredentials,
-    handleToggleStar,
-    removeCredential,
+    viewableItems,
     expandedCard,
+    loadCredentials,
+    handleToggleStar,
     handleCardPress,
-    viewableItems
+    handleRemove,
   } = useCredentialList();
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const MainScreen = () => {
             key={`${item.service}-${item.isStarred}`}
             item={item}
             viewableItems={viewableItems}
-            removeCredential={removeCredential}
+            removeCredential={handleRemove}
             toggleStar={handleToggleStar}
             isExpanded={expandedCard === item.service}
             onPress={() => handleCardPress(item.service)}

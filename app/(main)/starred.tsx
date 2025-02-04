@@ -9,11 +9,11 @@ import { colors } from "~/lib/colors";
 const StarredPage = () => {
     const {
         starredCredentials,
-        handleToggleStar,
-        removeCredential,
+        viewableItems,
         expandedCard,
+        handleToggleStar,
         handleCardPress,
-        viewableItems
+        handleRemove,
     } = useCredentialList();
 
     const { theme } = useThemeContext()
@@ -27,7 +27,7 @@ const StarredPage = () => {
                         key={`${item.service}-${item.isStarred}`}
                         item={item}
                         viewableItems={viewableItems}
-                        removeCredential={removeCredential}
+                        removeCredential={handleRemove}
                         toggleStar={handleToggleStar}
                         isExpanded={expandedCard === item.service}
                         onPress={() => handleCardPress(item.service)}

@@ -8,6 +8,7 @@ import useAlert from "~/hooks/use-alert";
 import AlertPopup from "../alert-popup";
 import { memo, useCallback } from "react";
 import StarButton from "./star-button";
+import { showToastWithGravity } from "~/lib/utils";
 
 interface ServiceCardProps {
     item: Credential
@@ -57,6 +58,11 @@ const ServiceCard = memo(({
 
     const handleToggleStar = useCallback(() => {
         toggleStar(item.service)
+        if (item.isStarred) {
+            showToastWithGravity(`${item.service} is removed from favorites`)
+        } else {
+            showToastWithGravity(`${item.service} is added to favorites!`)
+        }
     }, [item.service, toggleStar])
 
     return (

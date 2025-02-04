@@ -11,46 +11,38 @@ const MainLayout = () => {
   const activeColor = colors[theme];
 
   const currentRoute = usePathname();
+  const getDrawerIconColor = (route: string) => {
+    return currentRoute === route ? activeColor.drawerActiveTint : activeColor.drawerInactiveTint;
+  }
 
   return (
     <Drawer drawerContent={CustomDrawer}
       screenOptions={{
-        drawerStyle: { backgroundColor: activeColor.drawerBg, width: 250 },
+        drawerStyle: { backgroundColor: activeColor.drawerBg, width: "60%" },
         drawerActiveBackgroundColor: activeColor.drawerActiveBg,
         drawerActiveTintColor: activeColor.drawerActiveTint,
         drawerInactiveTintColor: activeColor.drawerInactiveTint,
+        headerTitleStyle: { fontWeight: "bold", color: activeColor.text },
+        headerTintColor: activeColor.icon,
+        headerTitleAlign: "center",
+        headerTransparent: true,
+        headerShown: true,
       }} >
       <Drawer.Screen
         name="index"
         options={{
           drawerLabel: "Home",
-          headerShown: true,
           headerTitle: "My keys✨",
-          headerTitleAlign: "center",
-          headerTransparent: true,
-          headerTitleStyle: {
-            fontWeight: "bold",
-            color: activeColor.text
-          },
-          headerTintColor: activeColor.icon,
-          drawerIcon: () => <FontAwesome name="home" size={24} color={currentRoute === "/" ? activeColor.drawerActiveTint : activeColor.drawerInactiveTint} />,
+          drawerIcon: () => <FontAwesome name="home" size={24} color={getDrawerIconColor("/")} />,
           headerRight: () => <SearchBox />,
         }}
       />
       <Drawer.Screen
         name="starred"
         options={{
-          drawerLabel: "Starred",
-          headerShown: true,
-          headerTitle: "Starred",
-          headerTitleAlign: "center",
-          headerTransparent: true,
-          headerTitleStyle: {
-            fontWeight: "bold",
-            color: activeColor.text
-          },
-          headerTintColor: "white",
-          drawerIcon: () => <FontAwesome name="star" size={24} color={currentRoute === "/starred" ? activeColor.drawerActiveTint : activeColor.drawerInactiveTint} />,
+          drawerLabel: "Favorite keys",
+          headerTitle: "Favorite keys🌟",
+          drawerIcon: () => <FontAwesome name="star" size={24} color={getDrawerIconColor("/starred")} />,
         }}
       />
     </Drawer>
