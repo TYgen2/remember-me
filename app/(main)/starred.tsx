@@ -1,49 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
-import { View, ViewToken } from "react-native"
+import { View } from "react-native"
 import { FlatList } from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
 import Empty from "~/components/main/empty";
 import ServiceCard from "~/components/main/service-card";
 import { useThemeContext } from "~/context/theme-context";
+import useCredentialList from "~/hooks/use-credential-list";
 import { colors } from "~/lib/colors";
-import useCredentialStore from "~/store/useCredentialStore";
 
 const StarredPage = () => {
-    const { getStarredCredentials, removeCredential, toggleStar } = useCredentialStore()
-
-    const [starredCredentials, setStarredCredentials] = useState(getStarredCredentials())
-    const [expandedCard, setExpandedCard] = useState<string | null>(null)
-    const [, setForceUpdate] = useState({})
-
-    const handleCardPress = useCallback((service: string) => {
-        setExpandedCard((current) => (current === service ? null : service))
-    }, [])
-
-    const handleToggleStar = useCallback(
-        async (service: string) => {
-            await toggleStar(service)
-            setStarredCredentials(getStarredCredentials())
-            setForceUpdate({}) // Force a re-render
-        },
-        [toggleStar, getStarredCredentials],
-    )
-
-    const handleRemoveCredential = useCallback(
-        (service: string) => {
-            removeCredential(service)
-            setStarredCredentials(getStarredCredentials())
-        },
-        [removeCredential, getStarredCredentials],
-    )
-
-    useEffect(() => {
-        const unsubscribe = useCredentialStore.subscribe(() => {
-            setStarredCredentials(getStarredCredentials())
-        })
-        return unsubscribe
-    }, [getStarredCredentials])
-
-    const viewableItems = useSharedValue<ViewToken[]>([])
+    const {
+        starredCredentials,
+        handleToggleStar,
+        removeCredential,
+        expandedCard,
+        handleCardPress,
+        viewableItems
+    } = useCredentialList();
 
     const { theme } = useThemeContext()
     const activeColor = colors[theme]
@@ -56,7 +27,7 @@ const StarredPage = () => {
                         key={`${item.service}-${item.isStarred}`}
                         item={item}
                         viewableItems={viewableItems}
-                        removeCredential={handleRemoveCredential}
+                        removeCredential={removeCredential}
                         toggleStar={handleToggleStar}
                         isExpanded={expandedCard === item.service}
                         onPress={() => handleCardPress(item.service)}

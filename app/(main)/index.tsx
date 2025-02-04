@@ -1,36 +1,26 @@
-import { useCallback, useEffect, useState } from "react";
-import { FlatList, View, ViewToken } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import { useEffect } from "react";
+import { FlatList, View } from "react-native";
 import AddButton from "~/components/main/bottom-sheet/add-button";
 import Empty from "~/components/main/empty";
 import ServiceCard from "~/components/main/service-card";
 import { useThemeContext } from "~/context/theme-context";
+import useCredentialList from "~/hooks/use-credential-list";
 import { colors } from "~/lib/colors";
-import useCredentialStore from "~/store/useCredentialStore";
 
 const MainScreen = () => {
-  const { loadCredentials, filteredCredentials, removeCredential, toggleStar } = useCredentialStore();
-
-  const [expandedCard, setExpandedCard] = useState<string | null>(null)
-  const [, setForceUpdate] = useState({})
-
-  const handleCardPress = useCallback((service: string) => {
-    setExpandedCard((current) => (current === service ? null : service))
-  }, []);
-
-  const handleToggleStar = useCallback(
-    async (service: string) => {
-      await toggleStar(service)
-      setForceUpdate({}) // Force a re-render
-    },
-    [toggleStar],
-  )
+  const {
+    loadCredentials,
+    filteredCredentials,
+    handleToggleStar,
+    removeCredential,
+    expandedCard,
+    handleCardPress,
+    viewableItems
+  } = useCredentialList();
 
   useEffect(() => {
     loadCredentials();
   }, [loadCredentials]);
-
-  const viewableItems = useSharedValue<ViewToken[]>([]);
 
   const { theme } = useThemeContext();
   const activeColor = colors[theme];

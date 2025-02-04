@@ -13,7 +13,6 @@ interface CredentialStore {
     loadCredentials: () => Promise<void>;
     toggleStar: (service: string) => Promise<void>;
     setSearchQuery: (query: string) => void;
-    getStarredCredentials: () => Credential[]
 }
 
 const filterCredentials = (credentials: Credential[], query: string) => {
@@ -83,7 +82,8 @@ const useCredentialStore = create<CredentialStore>((set, get) => ({
             const newCredentials = state.credentials.filter((cred) => cred.service !== service);
             return {
                 credentials: newCredentials,
-                filteredCredentials: filterCredentials(newCredentials, state.searchQuery)
+                filteredCredentials: filterCredentials(newCredentials, state.searchQuery),
+                starredCredentials: state.starredCredentials.filter((cred) => cred.service !== service),
             };
         });
     },
@@ -118,9 +118,6 @@ const useCredentialStore = create<CredentialStore>((set, get) => ({
             searchQuery: query,
             filteredCredentials: filterCredentials(state.credentials, query),
         }))
-    },
-    getStarredCredentials: () => {
-        return get().credentials.filter((cred) => cred.isStarred)
     },
 }))
 
