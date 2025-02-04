@@ -8,6 +8,7 @@ interface CredentialStore {
     filteredCredentials: Credential[];
     starredCredentials: Credential[];
     searchQuery: string;
+    isLoading: boolean;
     addCredential: (credential: Credential) => Promise<void>;
     removeCredential: (service: string) => Promise<void>;
     loadCredentials: () => Promise<void>;
@@ -27,6 +28,7 @@ const useCredentialStore = create<CredentialStore>((set, get) => ({
     filteredCredentials: [],
     starredCredentials: [],
     searchQuery: '',
+    isLoading: true,
 
     addCredential: async (newCredential) => {
         await SecureStore.setItemAsync(newCredential.service, JSON.stringify(newCredential));
@@ -73,6 +75,8 @@ const useCredentialStore = create<CredentialStore>((set, get) => ({
             })
         } catch (error) {
             console.error("Failed to load credentials:", error)
+        } finally {
+            set({ isLoading: false })
         }
     },
     removeCredential: async (service) => {
@@ -121,4 +125,4 @@ const useCredentialStore = create<CredentialStore>((set, get) => ({
     },
 }))
 
-export default useCredentialStore
+export default useCredentialStore;

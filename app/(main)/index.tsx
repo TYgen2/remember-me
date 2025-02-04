@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { FlatList, View } from "react-native";
+import { FlatList, Image, View } from "react-native";
 import AddButton from "~/components/main/bottom-sheet/add-button";
 import Empty from "~/components/main/empty";
 import ServiceCard from "~/components/main/service-card";
@@ -12,6 +12,7 @@ const MainScreen = () => {
     filteredCredentials,
     viewableItems,
     expandedCard,
+    isLoading,
     loadCredentials,
     handleToggleStar,
     handleCardPress,
@@ -24,6 +25,14 @@ const MainScreen = () => {
 
   const { theme } = useThemeContext();
   const activeColor = colors[theme];
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center" style={{ backgroundColor: activeColor.primary }}>
+        <Image source={require("~/assets/icon/kurukuru.gif")} className="h-24 w-24" />
+      </View>
+    )
+  }
 
   return (
     <View className="flex-1" style={{ paddingTop: 60, backgroundColor: activeColor.primary }}>

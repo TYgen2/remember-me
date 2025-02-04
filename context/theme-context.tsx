@@ -34,7 +34,7 @@ export const ThemeContextProvider = ({ children }: ThemeContextProviderProps) =>
     const toggleTheme = async () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
-        await setItem("light");
+        await setItem(newTheme);
     };
 
     return (

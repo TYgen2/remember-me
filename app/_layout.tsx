@@ -9,6 +9,7 @@ import {
 import { ThemeContextProvider } from "~/context/theme-context";
 
 const RootLayout = () => {
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <BottomSheetModalProvider>

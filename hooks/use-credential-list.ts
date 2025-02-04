@@ -5,7 +5,7 @@ import { showToastWithGravity } from "~/lib/utils";
 import useCredentialStore from "~/store/useCredentialStore";
 
 const useCredentialList = () => {
-    const { loadCredentials, filteredCredentials, starredCredentials, removeCredential, toggleStar } = useCredentialStore();
+    const { loadCredentials, filteredCredentials, starredCredentials, removeCredential, toggleStar, isLoading } = useCredentialStore();
     const [expandedCard, setExpandedCard] = useState<string | null>(null)
 
     const handleCardPress = useCallback((service: string) => {
@@ -32,6 +32,7 @@ const useCredentialList = () => {
         starredCredentials,
         viewableItems,
         expandedCard,
+        isLoading,
         loadCredentials,
         handleCardPress,
         handleToggleStar,
