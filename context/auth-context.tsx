@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { useLocalStorage } from "../hooks/use-local-storage";
+import { useSecureStore } from "~/hooks/use-secure-store";
 
 interface AuthContextProviderProps {
   children: React.ReactNode;
@@ -13,18 +13,18 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue>({ authConfirmed: false, loading: true });
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
-  const { getItem } = useLocalStorage("authConfirmed");
+  const { getSecureValue } = useSecureStore("authConfirmed");
   const [authConfirmed, setAuthConfirmed] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadAuthStatus = async () => {
-      const status = await getItem();
+      const status = await getSecureValue();
       setAuthConfirmed(status);
       setLoading(false);
     };
     loadAuthStatus();
-  }, [getItem]);
+  }, [getSecureValue]);
 
   return (
     <AuthContext.Provider value={{ authConfirmed, loading }}>

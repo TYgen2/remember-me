@@ -1,7 +1,7 @@
 import * as LocalAuthentication from 'expo-local-authentication';
 import { Linking, Alert } from 'react-native';
-import { useLocalStorage } from '../hooks/use-local-storage';
 import { router } from 'expo-router';
+import { useSecureStore } from '~/hooks/use-secure-store';
 
 interface useAuthProps {
     setAlertOpen: (alertOpen: boolean) => void;
@@ -22,8 +22,8 @@ export const authenticateForFirstTime = async ({ setAlertOpen, setAlertMessage }
     // Biometric as first priority, then password (PIN, pattern, etc)
     const authResult = await LocalAuthentication.authenticateAsync();
     if (authResult.success) {
-        const { setItem } = useLocalStorage("authConfirmed");
-        await setItem(true);
+        const { setSecureValue } = useSecureStore("authConfirmed");
+        await setSecureValue(true);
 
         router.replace('/(main)');
     }
