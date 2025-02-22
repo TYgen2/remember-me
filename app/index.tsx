@@ -1,13 +1,9 @@
 import { Redirect } from "expo-router";
 import { useAuthContext } from "~/context/auth-context";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authenticateUser } from "~/lib/auth";
 import { LoadingSpinner } from "~/components/loading-spinner";
 
 const Index = () => {
-  // For testing first time user
-  // AsyncStorage.clear();
-
   // Get auth status
   const { authConfirmed, loading } = useAuthContext();
 

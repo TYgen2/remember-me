@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import { useLocalStorage } from '~/hooks/use-local-storage';
+import { useAsyncStorage } from '~/hooks/use-async-storage';
 
 type Theme = "light" | "dark"
 
@@ -16,15 +16,15 @@ export const ThemeContext = createContext<ThemeContextType | undefined>(undefine
 
 export const ThemeContextProvider = ({ children }: ThemeContextProviderProps) => {
     const [theme, setTheme] = useState<Theme>("light");
-    const { setItem, getItem } = useLocalStorage("theme")
+    const { setAsyncValue, getAsyncValue } = useAsyncStorage("theme")
 
     useEffect(() => {
         const loadTheme = async () => {
-            const savedTheme = await getItem();
+            const savedTheme = await getAsyncValue();
             if (savedTheme) {
                 setTheme(savedTheme as Theme);
             } else {
-                await setItem("light");
+                await setAsyncValue("light");
             }
         };
 
@@ -34,7 +34,7 @@ export const ThemeContextProvider = ({ children }: ThemeContextProviderProps) =>
     const toggleTheme = async () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
-        await setItem(newTheme);
+        await setAsyncValue(newTheme);
     };
 
     return (
