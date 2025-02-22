@@ -8,8 +8,15 @@ interface useAuthProps {
     setAlertMessage: (alertMessage: { title: string, content: string }) => void;
 }
 
-export const authenticateForFirstTime = async ({ setAlertOpen, setAlertMessage }: useAuthProps) => {
+export const hasSetLocalAuth = async () => {
     const enrolledLevel = await LocalAuthentication.getEnrolledLevelAsync();
+    return enrolledLevel;
+}
+
+export const authenticateForFirstTime = async ({ setAlertOpen, setAlertMessage }: useAuthProps) => {
+    const enrolledLevel = await hasSetLocalAuth();
+
+    // enrolledLevel === 0 means no authentication method is set up on the device
     if (enrolledLevel === 0) {
         setAlertOpen(true);
         setAlertMessage({
