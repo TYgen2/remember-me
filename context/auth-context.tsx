@@ -1,33 +1,51 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { useSecureStore } from "~/hooks/use-secure-store";
+import { hasSetLocalAuth } from "~/lib/auth";
 
 interface AuthContextProviderProps {
   children: React.ReactNode;
 }
 
 interface AuthContextValue {
-  authConfirmed: boolean;
+  hasAuthSetup: boolean;
+  authConfirmed: boolean | undefined;
   loading: boolean;
+  refreshAuthStatus: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue>({ authConfirmed: false, loading: true });
+const AuthContext = createContext<AuthContextValue>({ hasAuthSetup: false, authConfirmed: false, loading: true, refreshAuthStatus: async () => { } });
 
 export const AuthContextProvider = ({ children }: AuthContextProviderProps) => {
+  // Use SecureStore to store the auth status, better security than async storage
   const { getSecureValue } = useSecureStore("authConfirmed");
-  const [authConfirmed, setAuthConfirmed] = useState(false);
+
+  const [hasAuthSetup, setHasAuthSetup] = useState(false);
+  const [authConfirmed, setAuthConfirmed] = useState<boolean | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadAuthStatus = async () => {
-      const status = await getSecureValue();
-      setAuthConfirmed(status);
-      setLoading(false);
-    };
-    loadAuthStatus();
+  const loadAuthData = useCallback(async () => {
+    // Fetch auth status and setup
+    setLoading(true);
+    const status = await getSecureValue();
+    const hasSetup = await hasSetLocalAuth();
+
+    // hasSetup > 0 means local auth is set up
+    setHasAuthSetup(hasSetup > 0);
+    setAuthConfirmed(status);
+    setLoading(false);
   }, [getSecureValue]);
 
+  // Initial load of auth status
+  useEffect(() => {
+    loadAuthData();
+  }, []);
+
+  const refreshAuthStatus = useCallback(async () => {
+    await loadAuthData();
+  }, [loadAuthData]);
+
   return (
-    <AuthContext.Provider value={{ authConfirmed, loading }}>
+    <AuthContext.Provider value={{ hasAuthSetup, authConfirmed, loading, refreshAuthStatus }}>
       {children}
     </AuthContext.Provider>
   );
