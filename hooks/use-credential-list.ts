@@ -5,39 +5,47 @@ import { showToastWithGravity } from "~/lib/utils";
 import useCredentialStore from "~/store/useCredentialStore";
 
 const useCredentialList = () => {
-    const { loadCredentials, filteredCredentials, starredCredentials, removeCredential, toggleStar, isLoading } = useCredentialStore();
-    const [expandedCard, setExpandedCard] = useState<string | null>(null)
+  const {
+    loadCredentials,
+    filteredCredentials,
+    starredCredentials,
+    removeCredential,
+    updateCredential,
+    toggleStar,
+    isLoading,
+  } = useCredentialStore();
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
-    const handleCardPress = useCallback((service: string) => {
-        setExpandedCard((current) => (current === service ? null : service))
-    }, []);
+  const handleCardPress = useCallback((service: string) => {
+    setExpandedCard((current) => (current === service ? null : service));
+  }, []);
 
-    const handleToggleStar = useCallback(
-        async (service: string) => await toggleStar(service),
-        [toggleStar],
-    )
+  const handleToggleStar = useCallback(
+    async (service: string) => await toggleStar(service),
+    [toggleStar],
+  );
 
-    const handleRemove = useCallback(
-        async (service: string) => {
-            await removeCredential(service);
-            showToastWithGravity(`${service} deleted successfully`)
-        },
-        [removeCredential],
-    )
+  const handleRemove = useCallback(
+    async (service: string) => {
+      await removeCredential(service);
+      showToastWithGravity(`${service} deleted successfully`);
+    },
+    [removeCredential],
+  );
 
-    const viewableItems = useSharedValue<ViewToken[]>([]);
+  const viewableItems = useSharedValue<ViewToken[]>([]);
 
-    return {
-        filteredCredentials,
-        starredCredentials,
-        viewableItems,
-        expandedCard,
-        isLoading,
-        loadCredentials,
-        handleCardPress,
-        handleToggleStar,
-        handleRemove,
-    }
-}
+  return {
+    filteredCredentials,
+    starredCredentials,
+    viewableItems,
+    expandedCard,
+    isLoading,
+    loadCredentials,
+    handleCardPress,
+    handleToggleStar,
+    handleRemove,
+  };
+};
 
 export default useCredentialList;

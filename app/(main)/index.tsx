@@ -28,14 +28,23 @@ const MainScreen = () => {
 
   if (isLoading) {
     return (
-      <View className="flex-1 justify-center items-center" style={{ backgroundColor: activeColor.primary }}>
-        <Image source={require("~/assets/icon/kurukuru.gif")} className="h-24 w-24" />
+      <View
+        className="flex-1 items-center justify-center"
+        style={{ backgroundColor: activeColor.primary }}
+      >
+        <Image
+          source={require("~/assets/icon/kurukuru.gif")}
+          className="h-24 w-24"
+        />
       </View>
-    )
+    );
   }
 
   return (
-    <View className="flex-1" style={{ paddingTop: 60, backgroundColor: activeColor.primary }}>
+    <View
+      className="flex-1"
+      style={{ paddingTop: 60, backgroundColor: activeColor.primary }}
+    >
       <AddButton />
       <FlatList
         renderItem={({ item }) => (
